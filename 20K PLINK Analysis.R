@@ -80,7 +80,7 @@ rownames(HW_t) <- NULL
 #Load in PLINK .ped
 ped <- read.csv("20K_JD_PFR.ped", header = FALSE,sep = "\t")
 
-#Bind JKI data onto PLINK .ped
+#Bind Howard 20K data onto PLINK .ped
 names(HW_t) <- names(ped)
 combined_ped <- bind_rows(ped, HW_t)
 
