@@ -54,6 +54,7 @@ system("plink --file JD_PFR_All --update-alleles Recode_50K.txt  --extract 50K_e
 system("plink --bfile 20K_JD_PFR --recode --tab --out 20K_JD_PFR")
 
 
+
 ##Combining Howard et al. 2021 20K data with JD_PFR samples
 
 #clear workspace
@@ -90,6 +91,8 @@ map <- read.csv("20K_JD_PFR.map", header = FALSE, sep ="\t")
 #Save .map file and combined .ped file with same base
 write.table(map, "20K_PLINK.map", sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 write.table(combined_ped, "20K_PLINK.ped", sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+
 
 ##Running PLINK Duplicate Analysis
 
