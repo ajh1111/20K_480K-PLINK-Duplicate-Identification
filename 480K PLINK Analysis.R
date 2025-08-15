@@ -1,0 +1,1 @@
+#This script integrates 480K SNP data from Denance et al. 2019, with the Jim Dunckley and Plant & Food Research samples to find duplicates with PLINK.
