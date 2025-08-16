@@ -1,5 +1,5 @@
 #This script integrates 20K SNP data from Howard et al. 2021, with the Jim Dunckley and Plant & Food Research samples to find duplicates with PLINK.
-#PLINK files for JD-PFR analysis previously are reused, and the 20K data formatted as close to PLINK format as possible in Excel first
+#JD_PFR genotype files are re-exported from Axiom to have all SNPs, and the 20K data formatted as close to PLINK format as possible in Excel first
 
 #Load packages
 library(tibble)
