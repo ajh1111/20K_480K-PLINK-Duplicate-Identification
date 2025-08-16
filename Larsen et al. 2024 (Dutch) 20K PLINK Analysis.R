@@ -19,5 +19,5 @@ system("plink --file JD_PFR_All --extract JD_PFR_Danish_Dutch_ExtractList.txt --
 system("plink --bfile Danish_Dutch_JD_PFR --recode --tab --out Danish_Dutch_JD_PFR")
 
 #Use PLINK to extract overlapping SNPs from 20K Larsen et al. 2024 samples, recode SNP positions, and output as .ped and .map
-system("plink --file Dutch_20K --extract Danish_Dutch_ExtractList.txt --update-chr Danish_Dutch_chr.txt --update-cm Danish_Dutch_cm.txt --update-map Danish_Dutch_map.txt --make-bed --out Dutch_20K")
+system("plink --file Dutch_20K --extract Danish_Dutch_ExtractList.txt --allow-extra-chr --update-chr Danish_Dutch_chr.txt --update-cm Danish_Dutch_cm.txt --update-map Danish_Dutch_map.txt --make-bed --out Dutch_20K")
 system("plink --bfile Dutch_20K  --update-name Danish_Dutch_name.txt --recode tab --out Dutch_Ready")
