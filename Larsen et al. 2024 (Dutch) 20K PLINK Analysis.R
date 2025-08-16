@@ -102,7 +102,7 @@ sample_counts <- rowSums(dd[, -1] != " ")
 dd <- add_column(dd, SampleCount = sample_counts, .after = "Group")
 
 #Rename columns
-colnames(dd) <- c("Group", "SampleCount", "ID1","ID2","ID3","ID4","ID5","ID6","ID7","ID8","ID9","ID10","ID11","ID12","ID13", "ID14")
+colnames(dd) <- c("Group", "SampleCount", "ID1","ID2","ID3","ID4","ID5","ID6","ID7","ID8","ID9","ID10","ID11","ID12","ID13")
 
 #Save .csv of duplicate groupings
 write.csv(dd, "C:/Users/curly/Desktop/Apple Genotyping/Results/20K_480K PLINK Duplicate Identification/Larsen et al. 2024 20K Results/Grouped_Duplicates.csv", row.names = FALSE)
