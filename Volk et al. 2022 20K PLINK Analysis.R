@@ -9,13 +9,13 @@ library(dplyr)
 library(tidyr)
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_20K")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_2022")
 
 
 ##Convert files, format, extract chosen SNPs.
 
 #Convert Volk et al. 2022 data from VCF to PLINK .ped and .map
-system("plink --vcf Volk_20K.vcf --const-fid 0 --allow-extra-chr --recode tab --out Volk_20K")
+system("plink --vcf Volk_20K.vcf --const-fid 0 --allow-extra-chr --recode tab --out Volk_2022")
 
 #Use PLINK to extract overlapping SNPs from JD and PFR samples 
 system("plink --file JD_PFR_All --extract JD_PFR_Volk_ExtractList.txt --make-bed --out Volk_JD_PFR")
@@ -32,7 +32,7 @@ system("plink --bfile Volk_20K  --update-name Volk_name.txt --recode tab --out V
 rm(list=ls())
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_20K")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_2022")
 
 #Load JD_PFR data
 JD_ped <- read.csv("Volk_JD_PFR.ped", header = FALSE,sep = "\t")
@@ -62,7 +62,7 @@ write.table(combined_ped, "Volk_PLINK.ped", sep = "\t", row.names = FALSE, col.n
 rm(list=ls())
 
 #set working directory [must contain plink.exe and files for analysis]
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_20K")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_2022")
 
 #Run PLINK
 system("plink --file Volk_PLINK --missing-genotype 0 --genome full ")
