@@ -1,5 +1,5 @@
 #This script integrates 20K SNP data from Volk et al. 2022, with the Jim Dunckley and Plant & Food Research samples to find duplicates with PLINK.
-#PLINK files for JD-PFR analysis previously are reused. SNP list for Larsen et al. data is reused too.
+#PLINK files for JD-PFR analysis previously are reused; these are the outputs of Axiom, with triploids removed.
 
 #Load packages
 library(tibble)
@@ -9,7 +9,7 @@ library(dplyr)
 library(tidyr)
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_20K")
 
 
 ##Convert files, format, extract chosen SNPs.
@@ -17,13 +17,13 @@ setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate 
 #Convert Volk et al. 2022 data from VCF to PLINK .ped and .map
 system("plink --vcf Volk_20K.vcf --const-fid 0 --allow-extra-chr --recode tab --out Volk_20K")
 
-#Use PLINK to extract overlapping SNPs from JD and PFR samples (using list from Larsen et al. R script)
-system("plink --file JD_PFR_All --extract JD_PFR_Danish_Dutch_ExtractList.txt --make-bed --out Volk_JD_PFR")
+#Use PLINK to extract overlapping SNPs from JD and PFR samples 
+system("plink --file JD_PFR_All --extract JD_PFR_Volk_ExtractList.txt --make-bed --out Volk_JD_PFR")
 system("plink --bfile Volk_JD_PFR --recode --tab --out Volk_JD_PFR")
 
 #Use PLINK to extract overlapping SNPs from 20K Larsen et al. 2025 samples, recode SNP positions, and output as .ped and .map
-system("plink --file Volk_20K --extract Danish_Dutch_ExtractList.txt --allow-extra-chr --update-chr Danish_Dutch_chr.txt --update-cm Danish_Dutch_cm.txt --update-map Danish_Dutch_map.txt --make-bed --out Volk_20K")
-system("plink --bfile Volk_20K  --update-name Danish_Dutch_name.txt --recode tab --out Volk_Ready")
+system("plink --file Volk_20K --extract Volk_ExtractList.txt --allow-extra-chr --update-chr Volk_chr.txt --update-cm Volk_cm.txt --update-map Volk_map.txt --make-bed --out Volk_20K")
+system("plink --bfile Volk_20K  --update-name Volk_name.txt --recode tab --out Volk_Ready")
 
 
 ##Combining Volk et al. 2022 20K data with JD_PFR samples
@@ -32,7 +32,7 @@ system("plink --bfile Volk_20K  --update-name Danish_Dutch_name.txt --recode tab
 rm(list=ls())
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_20K")
 
 #Load JD_PFR data
 JD_ped <- read.csv("Volk_JD_PFR.ped", header = FALSE,sep = "\t")
@@ -62,7 +62,7 @@ write.table(combined_ped, "Volk_PLINK.ped", sep = "\t", row.names = FALSE, col.n
 rm(list=ls())
 
 #set working directory [must contain plink.exe and files for analysis]
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Volk_20K")
 
 #Run PLINK
 system("plink --file Volk_PLINK --missing-genotype 0 --genome full ")
