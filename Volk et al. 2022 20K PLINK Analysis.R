@@ -15,7 +15,7 @@ setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate 
 ##Convert files, format, extract chosen SNPs.
 
 #Convert Volk et al. 2022 data from VCF to PLINK .ped and .map
-system("plink --vcf Volk_20K.vcf --const-fid 0 --allow-extra-chr --recode tab --out Danish_20K")
+system("plink --vcf Volk_20K.vcf --const-fid 0 --allow-extra-chr --recode tab --out Volk_20K")
 
 #Use PLINK to extract overlapping SNPs from JD and PFR samples (using list from Larsen et al. R script)
 system("plink --file JD_PFR_All --extract JD_PFR_Danish_Dutch_ExtractList.txt --make-bed --out Volk_JD_PFR")
@@ -103,7 +103,7 @@ sample_counts <- rowSums(dd[, -1] != " ")
 dd <- add_column(dd, SampleCount = sample_counts, .after = "Group")
 
 #Rename columns
-colnames(dd) <- c("Group", "SampleCount", "ID1","ID2","ID3","ID4","ID5","ID6","ID7","ID8","ID9","ID10","ID11","ID12","ID13", "ID14")
+colnames(dd) <- c("Group", "SampleCount", "ID1","ID2","ID3","ID4","ID5","ID6","ID7","ID8","ID9","ID10","ID11","ID12","ID13")
 
 #Save .csv of duplicate groupings
 write.csv(dd, "C:/Users/curly/Desktop/Apple Genotyping/Results/20K_480K PLINK Duplicate Identification/Volk et al. 2022 20K Results/Grouped_Duplicates.csv", row.names = FALSE)
