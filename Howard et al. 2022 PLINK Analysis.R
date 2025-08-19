@@ -50,5 +50,99 @@ map[map$V1 > 17, c("V1", "V4")] <- 0
 write.table(map, "JD_PFR_All.map", sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 
 #Use PLINK to extract SNPs and recode alleles
-system("plink --file JD_PFR_All --update-alleles Recode_50K.txt  --extract 50K_extract.txt --make-bed --out 20K_JD_PFR")
-system("plink --bfile 20K_JD_PFR --recode --tab --out 20K_JD_PFR")
+system("plink --file JD_PFR_All --update-alleles Recode_50K.txt --extract 50K_extract.txt --make-bed --out HW_JD_PFR")
+system("plink --bfile HW_JD_PFR --recode --tab --out HW_JD_PFR")
+
+
+
+
+##Combining Howard et al. 2022 data with JD_PFR samples
+
+#clear workspace
+rm(list=ls())
+
+#Set wd
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Howard_2022")
+
+#Load Howard 20K data and transpose
+HW <- read.delim("Howard_2022.txt", header = FALSE, stringsAsFactors = FALSE)
+HW_t <- as.data.frame(t(HW))
+
+#Add empty columns for PLINK formatting
+HW_t <- add_column(HW_t, Fa = 0, Mo = 0, Se = 0, Ph = 0, .before = "V2" )
+HW_t <- add_column(HW_t, Fid = 0, .before = "V1" )
+
+#Remove header row 
+HW_t = HW_t[-1, ]
+
+#Remove row and column names
+colnames(HW_t) <- NULL
+rownames(HW_t) <- NULL
+
+#Load in PLINK .ped
+ped <- read.csv("HW_JD_PFR.ped", header = FALSE,sep = "\t")
+
+#Bind Howard 20K data onto PLINK .ped
+names(HW_t) <- names(ped)
+combined_ped <- bind_rows(ped, HW_t)
+
+#Load .map file
+map <- read.csv("HW_JD_PFR.map", header = FALSE, sep ="\t")
+
+#Save .map file and combined .ped file with same base
+write.table(map, "HW_PLINK.map", sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+write.table(combined_ped, "HW_PLINK.ped", sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+
+
+##Running PLINK Duplicate Analysis
+
+#clear workspace
+rm(list=ls())
+
+#set working directory [must contain plink.exe and files for analysis]
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Howard_2022")
+
+#Run PLINK
+system("plink --file HW_PLINK --missing-genotype 0 --genome full ")
+
+#Read genome file
+genome <- read.table("plink.genome", header = TRUE, sep = "", stringsAsFactors = FALSE)
+write.table(genome, "C:/Users/curly/Desktop/Apple Genotyping/Results/20K_480K PLINK Duplicate Identification/Howard et al. 2022 Results/PLINK_results.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+
+##Grouping duplicates
+
+#Filter for PI_HAT >0.96 (duplicate threshold)
+genome <- genome[!(genome$PI_HAT < 0.96), ]
+genome <- subset(genome, select = c("IID1","IID2"))
+
+#Group duplicates with igraph
+graph <- graph_from_data_frame(genome, directed = FALSE)
+components <- components(graph)
+
+#Sort groupings by number of duplicates
+group_sizes <- table(components$membership)
+sorted_group_ids <- order(group_sizes)
+new_ids <- match(components$membership, sorted_group_ids)
+V(graph)$group <- new_ids
+grouped_samples <- split(names(components$membership), new_ids)
+
+#Pad group with length less than max length with NA's
+max_len <- max(sapply(grouped_samples, length))
+padded_list <- lapply(grouped_samples, function(x) {c(x, rep(" ", max_len - length(x)))})
+
+#Write groupings to a dataframe
+dd <- as.data.frame(do.call(rbind, padded_list))
+
+#Add a number for each group
+dd <- cbind(Group = seq_len(nrow(dd)), dd)
+
+# Add the number of duplicates in each grouping
+sample_counts <- rowSums(dd[, -1] != " ")
+dd <- add_column(dd, SampleCount = sample_counts, .after = "Group")
+
+#Rename columns
+colnames(dd) <- c("Group", "SampleCount", "ID1","ID2","ID3","ID4","ID5","ID6","ID7","ID8","ID9","ID10","ID11","ID12","ID13")
+
+#Save .csv of duplicate groupings
+write.csv(dd, "C:/Users/curly/Desktop/Apple Genotyping/Results/20K_480K PLINK Duplicate Identification/Howard et al. 2022 Results/Grouped_Duplicates.csv", row.names = FALSE)
