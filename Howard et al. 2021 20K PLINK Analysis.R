@@ -1,5 +1,5 @@
 #This script integrates 20K SNP data from Howard et al. 2021, with the Jim Dunckley and Plant & Food Research samples to find duplicates with PLINK.
-#JD_PFR genotype files are re-exported from Axiom to have all SNPs, and the 20K data formatted as close to PLINK format as possible in Excel first
+#JD_PFR genotype files are re-exported from Axiom to have all SNPs, and the 20K data formatted as close to PLINK format as possible in Excel first, then saved as .txt.
 
 #Load packages
 library(tibble)
@@ -9,7 +9,7 @@ library(dplyr)
 library(tidyr)
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Howard_2021")
 
 #Initial JD_PFR .ped file curation
 
@@ -61,7 +61,7 @@ system("plink --bfile 20K_JD_PFR --recode --tab --out 20K_JD_PFR")
 rm(list=ls())
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Howard_2021")
 
 #Load Howard 20K data and transpose
 HW <- read.delim("Howard_2021_20K.txt", header = FALSE, stringsAsFactors = FALSE)
@@ -100,7 +100,7 @@ write.table(combined_ped, "20K_PLINK.ped", sep = "\t", row.names = FALSE, col.na
 rm(list=ls())
 
 #set working directory [must contain plink.exe and files for analysis]
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Howard_2021")
 
 #Run PLINK
 system("plink --file 20K_PLINK --missing-genotype 0 --genome full ")
