@@ -9,7 +9,7 @@ library(dplyr)
 library(tidyr)
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Larsen_2024")
 
 ##Convert files, format, extract chosen SNPs.
 
@@ -17,12 +17,12 @@ setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate 
 system("plink --vcf Dutch_20K.vcf --const-fid 0 --allow-extra-chr --recode tab --out Dutch_20K")
 
 #Use PLINK to extract overlapping SNPs from JD and PFR samples
-system("plink --file JD_PFR_All --extract JD_PFR_Danish_Dutch_ExtractList.txt --make-bed --out Danish_Dutch_JD_PFR")
-system("plink --bfile Danish_Dutch_JD_PFR --recode --tab --out Danish_Dutch_JD_PFR")
+system("plink --file JD_PFR_All --extract JD_PFR_Dutch_ExtractList.txt --make-bed --out Dutch_JD_PFR")
+system("plink --bfile Dutch_JD_PFR --recode --tab --out Dutch_JD_PFR")
 
 #Use PLINK to extract overlapping SNPs from 20K Larsen et al. 2024 samples, recode SNP positions, and output as .ped and .map
-system("plink --file Dutch_20K --extract Danish_Dutch_ExtractList.txt --allow-extra-chr --update-chr Danish_Dutch_chr.txt --update-cm Danish_Dutch_cm.txt --update-map Danish_Dutch_map.txt --make-bed --out Dutch_20K")
-system("plink --bfile Dutch_20K  --update-name Danish_Dutch_name.txt --recode tab --out Dutch_Ready")
+system("plink --file Dutch_20K --extract Dutch_ExtractList.txt --allow-extra-chr --update-chr Dutch_chr.txt --update-cm Dutch_cm.txt --update-map Dutch_map.txt --make-bed --out Dutch_20K")
+system("plink --bfile Dutch_20K  --update-name Dutch_name.txt --recode tab --out Dutch_Ready")
 
 
 ##Combining Larsen et al. 2024 20K data with JD_PFR samples
@@ -31,10 +31,10 @@ system("plink --bfile Dutch_20K  --update-name Danish_Dutch_name.txt --recode ta
 rm(list=ls())
 
 #Set wd
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Larsen_2024")
 
 #Load JD_PFR data
-JD_ped <- read.csv("Danish_Dutch_JD_PFR.ped", header = FALSE,sep = "\t")
+JD_ped <- read.csv("Dutch_JD_PFR.ped", header = FALSE,sep = "\t")
 
 #Load Larsen 2024 Dutch 20K data, add prefix to names, set irrelevant tags to 0
 LD_ped <- read.csv("Dutch_Ready.ped", header = FALSE,sep = "\t")
@@ -48,7 +48,7 @@ names(LD_ped) <- names(JD_ped)
 combined_ped <- bind_rows(JD_ped, LD_ped)
 
 #Load .map file
-map <- read.csv("Danish_Dutch_JD_PFR.map", header = FALSE, sep ="\t")
+map <- read.csv("Dutch_JD_PFR.map", header = FALSE, sep ="\t")
 
 #Save .map file and combined .ped file with same base
 write.table(map, "Dutch_PLINK.map", sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
@@ -61,7 +61,7 @@ write.table(combined_ped, "Dutch_PLINK.ped", sep = "\t", row.names = FALSE, col.
 rm(list=ls())
 
 #set working directory [must contain plink.exe and files for analysis]
-setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs")
+setwd("C:/Users/curly/Desktop/Apple Genotyping/Methods/20K_480K PLINK Duplicate Identification/Inputs/Larsen_2024")
 
 #Run PLINK
 system("plink --file Dutch_PLINK --missing-genotype 0 --genome full ")
